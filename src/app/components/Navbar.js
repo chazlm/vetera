@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -9,6 +9,9 @@ import {
   InputBase,
   Box,
   Button,
+  Modal,
+  Fade,
+  Backdrop,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -52,7 +55,22 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const ModalBox = styled(Box)(({ theme }) => ({
+  position: "fixed",
+  bottom: 0,
+  width: "100%",
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(2, 4, 3),
+  borderRadius: theme.shape.borderRadius,
+  borderTopLeftRadius: "16px",
+  borderTopRightRadius: "16px",
+}));
+
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
+
+  console.log(open);
   return (
     <AppBar color="transparent" position="static" sx={{ paddingTop: "2rem" }}>
       <Toolbar>
@@ -62,24 +80,43 @@ const Navbar = () => {
           color="inherit"
           aria-label="menu"
           sx={{ mr: 2 }}
+          onClick={() => setOpen(true)}
         >
           <MenuIcon />
         </IconButton>
 
         {/* Logo */}
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          Reddit Clone
+          vetera
         </Typography>
 
         {/* Navigation Links */}
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
           <Button color="inherit">Home</Button>
-          <Button color="inherit">Popular</Button>
-          <Button color="inherit">Explore</Button>
         </Box>
 
+        {/* Modal for Menu */}
+        <Modal
+          open={open}
+          onClose={() => setOpen(true)}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
+        >
+          <Fade in={open}>
+            <ModalBox>
+              <Typography variant="h6">Menu</Typography>
+              <Button onClick={() => setOpen(false)}>Close</Button>
+              {/* Add menu links here */}
+            </ModalBox>
+          </Fade>
+        </Modal>
         {/* Search Bar */}
-        <Search>
+        {/* <Search>
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
@@ -87,7 +124,7 @@ const Navbar = () => {
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
           />
-        </Search>
+        </Search> */}
       </Toolbar>
     </AppBar>
   );
