@@ -12,10 +12,12 @@ import {
   Modal,
   Fade,
   Backdrop,
+  Slide,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import Link from "next/link";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -62,15 +64,19 @@ const ModalBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  borderRadius: theme.shape.borderRadius,
   borderTopLeftRadius: "16px",
   borderTopRightRadius: "16px",
+  transition: "transform 0.5s ease", // Slide transition
 }));
 
-const Navbar = () => {
+const Navbar = ({ onPageSelect }) => {
   const [open, setOpen] = useState(false);
 
-  console.log(open);
+  const handlePageChange = (page) => {
+    setOpen(false);
+    onPageSelect(page);
+  };
+
   return (
     <AppBar color="transparent" position="static" sx={{ paddingTop: "2rem" }}>
       <Toolbar>
@@ -91,40 +97,72 @@ const Navbar = () => {
         </Typography>
 
         {/* Navigation Links */}
-        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <Button color="inherit">Home</Button>
+        <Box sx={{ display: { xs: "flex", md: "flex" } }}>
+          <Button
+            onClick={() => {
+              handlePageChange("home");
+            }}
+            color="inherit"
+          >
+            Home
+          </Button>
         </Box>
 
         {/* Modal for Menu */}
         <Modal
           open={open}
-          onClose={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           closeAfterTransition
           slots={{ backdrop: Backdrop }}
           slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
+            backdrop: {},
           }}
         >
           <Fade in={open}>
-            <ModalBox>
-              <Typography variant="h6">Menu</Typography>
-              <Button onClick={() => setOpen(false)}>Close</Button>
-              {/* Add menu links here */}
-            </ModalBox>
+            <Slide in={open} direction="up" timeout={500}>
+              <ModalBox>
+                <Typography variant="h6">Menu</Typography>
+                <Button
+                  fullWidth
+                  sx={{ marginBottom: 1 }}
+                  onClick={() => {
+                    handlePageChange("gibill");
+                  }}
+                >
+                  GI Bill
+                </Button>
+
+                <Button
+                  fullWidth
+                  sx={{ marginBottom: 1 }}
+                  onClick={() => {
+                    handlePageChange("vaLoan");
+                  }}
+                >
+                  VA Loan
+                </Button>
+
+                <Button
+                  fullWidth
+                  sx={{ marginBottom: 1 }}
+                  onClick={() => {
+                    handlePageChange("vaDisability");
+                  }}
+                >
+                  VA Disability
+                </Button>
+
+                <Button
+                  onClick={() => setOpen(false)}
+                  fullWidth
+                  sx={{ marginTop: 2 }}
+                >
+                  Close
+                </Button>
+              </ModalBox>
+            </Slide>
           </Fade>
         </Modal>
-        {/* Search Bar */}
-        {/* <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search> */}
       </Toolbar>
     </AppBar>
   );
